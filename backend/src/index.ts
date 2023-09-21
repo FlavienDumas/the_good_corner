@@ -1,16 +1,9 @@
+import "reflect-metadata";
+import { dataSource } from "./datasource";
+import { Ad } from "./entities/Ad";
 import express from "express";
-const app = express();
 const port = 3000;
-
-import sqlite from "sqlite3";
-const db = new sqlite.Database('good_corner.sqlite', (err) => {
-  if (err) {
-    console.log(`probleme conneection bd : ${err}`);
-  } else {
-    console.log("connection effectuée");
-  }
-});
-db.get("PRAGMA foreign_keys = ON;");
+const app = express();
 
 app.use(express.json());
 
@@ -18,17 +11,19 @@ app.get("/", (req, res) => {
     res.send("Hello there");
 })
 
+
 // Ad routes
-app.get("/Ad", (req, res) => {
-    db.all("SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category;", (err, rows) => {
-      if (err) {
-        console.error(err.message);
-        return res.status(500).send("Erreur de base de données");
-      }
-      res.send(rows);
-    })
+app.get("/Ad", async (req, res) => {
+    try {
+      const ads = await Ad.find()
+      res.send(ads);
+    } catch (err){
+      console.log(err);
+      res.status(500).send();
+    }
 })
 
+/*
 app.get("/Ad/sort/:sort", (req, res) => {
   const sorting = req.params.sort;
   db.all(`SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category ORDER BY Ad.title ${sorting};`, (err, rows) => {
@@ -200,8 +195,9 @@ app.patch("/Category/:id", (req, res) =>{
       res.status(204).send();
     }
   });
-})
+})*/
 
-app.listen(port, () => {
-  console.log(`l'app écoute sur le port ${port}`);
-})
+app.listen(port, async () => {
+  await dataSource.initialize();
+  console.log('Server launch on http://localhost:5001');
+});
