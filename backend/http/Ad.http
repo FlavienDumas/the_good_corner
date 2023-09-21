@@ -1,11 +1,9 @@
 GET http://localhost:3000/Ad
-
 ###
-
-GET http://localhost:3000/Ad/1
-
+GET http://localhost:3000/Ad/sort/desc
 ###
-
+GET http://localhost:3000/Ad/filter/voiture
+###
 POST http://localhost:3000/Ad
 Content-Type: application/json
 
@@ -20,13 +18,9 @@ Content-Type: application/json
     "location": "Marseille",
     "createdAt": "2023-10-05T10:14:15.922Z"
 }
-
 ###
-
 DELETE http://localhost:3000/Ad/61
-
 ###
-
 PATCH http://localhost:3000/Ad/60
 Content-Type: application/json
 

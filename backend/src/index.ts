@@ -29,6 +29,28 @@ app.get("/Ad", (req, res) => {
     })
 })
 
+app.get("/Ad/sort/:sort", (req, res) => {
+  const sorting = req.params.sort;
+  db.all(`SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category ORDER BY Ad.title ${sorting};`, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Erreur de base de données");
+    }
+    res.send(rows);
+  })
+})
+
+app.get("/Ad/filter/:filter", (req, res) => {
+  const filter = req.params.filter;
+  db.all(`SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category WHERE Ad.title LIKE '%${filter}%';`, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Erreur de base de données");
+    }
+    res.send(rows);
+  })
+})
+
 app.post("/Ad", (req, res) => {
   db.run("INSERT INTO Ad (title, description, owner, price, location, createdAt, category) VALUES ($title, $description, $owner, $price, $location, $createdAt, $category)",
   {
