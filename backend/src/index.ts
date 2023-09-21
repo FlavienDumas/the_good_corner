@@ -10,6 +10,7 @@ const db = new sqlite.Database('good_corner.sqlite', (err) => {
     console.log("connection effectuée");
   }
 });
+db.get("PRAGMA foreign_keys = ON;");
 
 app.use(express.json());
 
@@ -17,8 +18,9 @@ app.get("/", (req, res) => {
     res.send("Hello there");
 })
 
-app.get("/ads", (req, res) => {
-    db.all("SELECT * FROM ads", (err, rows) => {
+// Ad routes
+app.get("/Ad", (req, res) => {
+    db.all("SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category;", (err, rows) => {
       if (err) {
         console.error(err.message);
         return res.status(500).send("Erreur de base de données");
@@ -27,16 +29,16 @@ app.get("/ads", (req, res) => {
     })
 })
 
-app.post("/ads", (req, res) => {
-  console.log(req.body);
-  db.run("INSERT INTO ads (title, description, owner, price, location, createdAt) VALUES ($title, $description, $owner, $price, $location, $createdAt)",
+app.post("/Ad", (req, res) => {
+  db.run("INSERT INTO Ad (title, description, owner, price, location, createdAt, category) VALUES ($title, $description, $owner, $price, $location, $createdAt, $category)",
   {
-    $title:  req.body.title,
+    $title: req.body.title,
     $description: req.body.description,
     $owner: req.body.owner,
     $price: req.body.price,
     $location: req.body.location,
-    $createdAt: req.body.createdAt
+    $createdAt: req.body.createdAt,
+    $category: req.body.category
   },
   (err) => {
     if (err) {
@@ -48,9 +50,9 @@ app.post("/ads", (req, res) => {
   });
 })
 
-app.delete("/ads/:id", (req, res) =>{
-  const targetId = Number(req.params.id);
-  db.run("DELETE FROM ads WHERE id = $id",
+app.delete("/Ad/:id", (req, res) =>{
+  const targetId: number = Number(req.params.id);
+  db.run("DELETE FROM Ad WHERE id = $id",
   {
     $id: targetId
   },
@@ -64,10 +66,10 @@ app.delete("/ads/:id", (req, res) =>{
   });
 })
 
-app.patch("/ads/:id", (req, res) =>{
+app.patch("/Ad/:id", (req, res) =>{
   const targetId = Number(req.params.id);
   const newAd = req.body;
-  let query = "UPDATE ads SET ";
+  let query = "UPDATE Ad SET ";
   let fields: { [key: string]: string | number } = {};
   let setting = "";
 
@@ -94,6 +96,74 @@ app.patch("/ads/:id", (req, res) =>{
   if ('createdAt' in newAd){
     setting += "createdAt= $createdAt, ";
     fields["$createAt"] = req.body.createdAt;
+  }
+  setting = setting.slice(0, -2);
+  query += setting;
+  query += ` WHERE id= ${targetId}`;
+
+  db.run(query, fields,
+  (err) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Erreur de base de données");
+    } else {
+      res.status(204).send();
+    }
+  });
+})
+
+// Category routes
+app.get("/Category", (req, res) =>{
+  db.all("SELECT * FROM category;", (err, rows) =>{
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Erreur de base de données");
+    }
+    res.send(rows);
+  })
+})
+
+app.post("/Category", (req, res) => {
+  db.run("INSERT INTO Category (name) VALUES ($name);",
+  {
+    $name: req.body.name
+  },
+  (err) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Erreur de base de données");
+    } else {
+      res.status(204).send();
+    }
+  })
+})
+
+app.delete("/Category/:id", (req, res) =>{
+  const targetId: number = Number(req.params.id);
+  db.run("DELETE FROM Category WHERE id = $id",
+  {
+    $id: targetId
+  },
+  (err) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Erreur de base de données");
+    } else {
+      res.status(204).send();
+    }
+  })
+})
+
+app.patch("/Category/:id", (req, res) =>{
+  const targetId = Number(req.params.id);
+  const newCateg = req.body;
+  let query = "UPDATE Category SET ";
+  let fields: { [key: string]: string | number } = {};
+  let setting = "";
+
+  if ('name' in newCateg){
+    setting += "name= $name, ";
+    fields["$name"] = req.body.name;
   }
   setting = setting.slice(0, -2);
   query += setting;

@@ -1,12 +1,12 @@
-GET http://localhost:3000/ads
+GET http://localhost:3000/Ad
 
 ###
 
-GET http://localhost:3000/ads/1
+GET http://localhost:3000/Ad/1
 
 ###
 
-POST http://localhost:3000/ads
+POST http://localhost:3000/Ad
 Content-Type: application/json
 
 {
@@ -23,11 +23,11 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/ads/61
+DELETE http://localhost:3000/Ad/61
 
 ###
 
-PATCH http://localhost:3000/ads/60
+PATCH http://localhost:3000/Ad/60
 Content-Type: application/json
 
 {

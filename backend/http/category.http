@@ -1,0 +1,23 @@
+GET http://localhost:3000/Category
+
+###
+
+POST http://localhost:3000/Category
+Content-Type: application/json
+
+{
+    "name": "NOUVELLE CATEGORIE"
+}
+
+###
+
+DELETE http://localhost:3000/Category/4
+
+###
+
+PATCH http://localhost:3000/Category/5
+Content-Type: application/json
+
+{
+    "name": "TESTTEST"
+}
