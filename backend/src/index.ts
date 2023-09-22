@@ -11,7 +11,6 @@ app.get("/", (req, res) => {
     res.send("Hello there");
 })
 
-
 // Ad routes
 app.get("/Ad", async (req, res) => {
     try {
@@ -23,112 +22,102 @@ app.get("/Ad", async (req, res) => {
     }
 })
 
+
+app.post("/Ad", async (req, res) => {
+  try {
+    const newAd = new Ad();
+    const liste = ["title", "description", "owner", "price", "picture", "location", "createdAt", "category"];
+    for (const key of liste) {
+      if (req.body.hasOwnProperty(key)) {
+        switch (key) {
+          case "title":
+              newAd.title = req.body[key]; break;
+          case "description":
+              newAd.description = req.body[key]; break;
+          case "owner":
+              newAd.owner = req.body[key]; break;
+          case "price":
+              newAd.price = req.body[key]; break;
+          case "picture":
+              newAd.picture = req.body[key]; break;
+          case "location":
+              newAd.location = req.body[key]; break;
+          case "createdAt":
+              newAd.createdAt = req.body[key]; break;
+          case "category":
+              newAd.category = req.body[key]; break;
+          default:
+              break;
+        }}}
+
+    if (newAd.title === undefined || newAd.owner === undefined) {
+      console.log('enregistrement impossible : renseigner les champs "title" et "owner"')
+    } else {
+      await newAd.save();
+      res.send(newAd);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
+})
+
+app.delete("/Ad/:id", async (req, res) => {
+  try{
+    const targetAdId: number = Number(req.params.id);
+    const targetAd = await Ad.findOneBy({id: targetAdId});
+    if (targetAd !== null){
+      await targetAd.remove();
+      console.log(`Ad ${targetAdId} supprimée`)
+    }
+    res.send(targetAd);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
+})
+
+app.patch("/Ad/:id", async (req, res) =>{
+  try {
+    const targetAdId: number = Number(req.params.id);
+    const targetAd = await Ad.findOneBy({id: targetAdId});
+    if (targetAd !== null) {
+      const liste = ["title", "description", "owner", "price", "picture", "location", "createdAt", "category"];
+      for (const key of liste) {
+        if (req.body.hasOwnProperty(key)) {
+          switch (key) {
+            case "title":
+              targetAd.title = req.body[key]; break;
+            case "description":
+              targetAd.description = req.body[key]; break;
+            case "owner":
+              targetAd.owner = req.body[key]; break;
+            case "price":
+              targetAd.price = req.body[key]; break;
+            case "picture":
+              targetAd.picture = req.body[key]; break;
+            case "location":
+              targetAd.location = req.body[key]; break;
+            case "createdAt":
+              targetAd.createdAt = req.body[key]; break;
+            case "category":
+              targetAd.category = req.body[key]; break;
+            default:
+                break;
+          }}}
+      await targetAd.save();
+      res.send(targetAd);
+      console.log(`AD ${targetAdId} modifiée`)
+    } else {
+      console.log(`L'Ad ${targetAdId} n'existe pas`)
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
+})
+
 /*
-app.get("/Ad/sort/:sort", (req, res) => {
-  const sorting = req.params.sort;
-  db.all(`SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category ORDER BY Ad.title ${sorting};`, (err, rows) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).send("Erreur de base de données");
-    }
-    res.send(rows);
-  })
-})
-
-app.get("/Ad/filter/:filter", (req, res) => {
-  const filter = req.params.filter;
-  db.all(`SELECT Ad.*, Category.name FROM Ad JOIN Category ON Category.id = Ad.category WHERE Ad.title LIKE '%${filter}%';`, (err, rows) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).send("Erreur de base de données");
-    }
-    res.send(rows);
-  })
-})
-
-app.post("/Ad", (req, res) => {
-  db.run("INSERT INTO Ad (title, description, owner, price, location, createdAt, category) VALUES ($title, $description, $owner, $price, $location, $createdAt, $category)",
-  {
-    $title: req.body.title,
-    $description: req.body.description,
-    $owner: req.body.owner,
-    $price: req.body.price,
-    $location: req.body.location,
-    $createdAt: req.body.createdAt,
-    $category: req.body.category
-  },
-  (err) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).send("Erreur de base de données");
-    } else {
-      res.status(204).send();
-    }
-  });
-})
-
-app.delete("/Ad/:id", (req, res) =>{
-  const targetId: number = Number(req.params.id);
-  db.run("DELETE FROM Ad WHERE id = $id",
-  {
-    $id: targetId
-  },
-  (err) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).send("Erreur de base de données");
-    } else {
-      res.status(204).send();
-    }
-  });
-})
-
-app.patch("/Ad/:id", (req, res) =>{
-  const targetId = Number(req.params.id);
-  const newAd = req.body;
-  let query = "UPDATE Ad SET ";
-  let fields: { [key: string]: string | number } = {};
-  let setting = "";
-
-  if ('title' in newAd){
-    setting += "title= $title, ";
-    fields["$title"] = req.body.title;
-  }
-  if ('description' in newAd){
-    setting += "description= $description, ";
-    fields["$description"] = req.body.description;
-  }
-  if ('owner' in newAd){
-    setting += "owner= $owner, ";
-    fields["$owner"] = req.body.owner;
-  }
-  if ('price' in newAd){
-    setting += "price= $price, ";
-    fields["$price"] = req.body.price;
-  }
-  if ('location' in newAd){
-    setting += "location= $location, ";
-    fields["$location"] = req.body.location;
-  }
-  if ('createdAt' in newAd){
-    setting += "createdAt= $createdAt, ";
-    fields["$createAt"] = req.body.createdAt;
-  }
-  setting = setting.slice(0, -2);
-  query += setting;
-  query += ` WHERE id= ${targetId}`;
-
-  db.run(query, fields,
-  (err) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).send("Erreur de base de données");
-    } else {
-      res.status(204).send();
-    }
-  });
-})
-
 // Category routes
 app.get("/Category", (req, res) =>{
   db.all("SELECT * FROM category;", (err, rows) =>{
@@ -199,5 +188,5 @@ app.patch("/Category/:id", (req, res) =>{
 
 app.listen(port, async () => {
   await dataSource.initialize();
-  console.log('Server launch on http://localhost:5001');
+  console.log('Server launch on http://localhost:3000');
 });

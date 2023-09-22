@@ -16,12 +16,21 @@ Content-Type: application/json
     "picture":
     "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
     "location": "Marseille",
-    "createdAt": "2023-10-05T10:14:15.922Z"
+    "createdAt": "2023-10-05T10:14:15.922Z",
+    "category": 3
 }
 ###
-DELETE http://localhost:3000/Ad/61
+POST http://localhost:3000/Ad
+Content-Type: application/json
+
+{
+    "title": "HOUSE to sell",
+    "owner": "Le pape"
+}
 ###
-PATCH http://localhost:3000/Ad/60
+DELETE http://localhost:3000/Ad/3
+###
+PATCH http://localhost:3000/Ad/3
 Content-Type: application/json
 
 {
