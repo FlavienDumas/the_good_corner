@@ -1,21 +1,17 @@
 GET http://localhost:3000/Ad
 ###
-GET http://localhost:3000/Ad/sort/desc
-###
-GET http://localhost:3000/Ad/filter/voiture
-###
 POST http://localhost:3000/Ad
 Content-Type: application/json
 
 {
-    "title": "HOUSE to sell",
+    "title": "TEST 2",
     "description":
-    "My HOUSE is blue, working fine. I'm selling it because I've got a new one",
-    "owner": "Le pape",
-    "price": 100000,
+    "BLA bla bla bla test",
+    "owner": "Rambo",
+    "price": 1200,
     "picture":
     "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
-    "location": "Marseille",
+    "location": "Bordeau",
     "createdAt": "2023-10-05T10:14:15.922Z",
     "category": 3
 }
@@ -24,16 +20,16 @@ POST http://localhost:3000/Ad
 Content-Type: application/json
 
 {
-    "title": "HOUSE to sell",
-    "owner": "Le pape"
+    "title": "TEST 4",
+    "owner": "Dieu himself"
 }
 ###
 DELETE http://localhost:3000/Ad/3
 ###
-PATCH http://localhost:3000/Ad/3
+PATCH http://localhost:3000/Ad/4
 Content-Type: application/json
 
 {
-    "title": "J'ai le BAREAU PTN",
-    "description": "ça marche enfin cette merde ptn j'ai le bareau"
+    "title": "TEST TEST",
+    "description": "TEST marche enfin cette merde ptn j'ai le bareau"
 }
