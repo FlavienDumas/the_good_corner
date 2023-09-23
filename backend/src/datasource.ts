@@ -7,5 +7,5 @@ export const dataSource = new DataSource({
   database: "tgc.sqlite",
   entities: [Ad, Category],
   synchronize: true,
-  logging: true
+  logging: false
 });

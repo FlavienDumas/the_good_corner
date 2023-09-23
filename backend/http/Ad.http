@@ -1,19 +1,19 @@
-GET http://localhost:3000/Ad
+GET http://localhost:3000/Ad?category=voit
 ###
 POST http://localhost:3000/Ad
 Content-Type: application/json
 
 {
-    "title": "TEST 2",
+    "title": "une voiture ptn",
     "description":
-    "BLA bla bla bla test",
-    "owner": "Rambo",
-    "price": 1200,
+    "Ceci est une voiture",
+    "owner": "Voiture man",
+    "price": 5000,
     "picture":
     "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
-    "location": "Bordeau",
+    "location": "Lyon",
     "createdAt": "2023-10-05T10:14:15.922Z",
-    "category": 3
+    "category": 2
 }
 ###
 POST http://localhost:3000/Ad
