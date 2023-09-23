@@ -1,8 +1,8 @@
 import { Controller } from ".";
 import { Request, Response } from "express";
 import { Ad } from "../entities/Ad";
-import { validate } from "class-validator";
 import { Like } from "typeorm";
+import { validate } from "class-validator";
 
 export class AdController extends Controller{
     getAll = async (req: Request, res: Response)=>{
@@ -33,7 +33,6 @@ export class AdController extends Controller{
             res.status(500).send();
           }
     }
-
     createOne = async (req: Request, res: Response)=>{
         try {
             const newAd = new Ad();
@@ -50,7 +49,6 @@ export class AdController extends Controller{
             res.status(500).send();
           }
     }
-
     deleteOne = async (req: Request, res: Response)=>{
         try{
             const targetAdId: number = Number(req.params.id);

@@ -3,6 +3,7 @@ import { dataSource } from "./datasource";
 import express from "express";
 import { AdController } from "./controllers/Ad";
 import { CategoryController } from "./controllers/Category";
+import { TagController } from "./controllers/Tag";
 const port = 3000;
 const app = express();
 
@@ -21,6 +22,12 @@ app.patch("/Ad/:id", adController.patchOne)
 const categoryController = new CategoryController();
 app.get("/Category", categoryController.getAll)
 app.patch("/Category/:id", categoryController.patchOne)
+
+const tagController = new TagController();
+app.get("/Tag", tagController.getAll)
+app.post("/Tag", tagController.createOne)
+app.delete("/Tag/:id", tagController.deleteOne)
+app.patch("/Tag/:id", tagController.patchOne)
 
 app.listen(port, async () => {
   await dataSource.initialize();
