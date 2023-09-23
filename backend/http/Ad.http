@@ -1,19 +1,19 @@
-GET http://localhost:3000/Ad?category=voit
+GET http://localhost:3000/Ad?category=Autre
 ###
 POST http://localhost:3000/Ad
 Content-Type: application/json
 
 {
-    "title": "une voiture ptn",
+    "title": "Je vend des farritas",
     "description":
-    "Ceci est une voiture",
-    "owner": "Voiture man",
-    "price": 5000,
+    "vend farritas, déjà entamées mais en sah elle sont encoure bonnes",
+    "owner": "le rat",
+    "price": 10,
     "picture":
-    "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
-    "location": "Lyon",
+    "https://brandsitesplatform-res.cloudinary.com/image/fetch/w_768,c_scale,q_auto:eco,f_auto,fl_lossy,dpr_1.0,e_sharpen:85/https://assets.brandplatform.generalmills.com%2F-%2Fmedia%2Fproject%2Fgmi%2Foldelpaso%2Foldelpaso-fr%2Foepp%2Fnri%2Fcrunchy-rainbow-chicken-fajitas%2Fcrunchy-rainbow-chicken-fajitas-hero.png%3Fw%3D480%26rev%3D6ef3fb0b7a0a4227b4bb46738149f6ee",
+    "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
-    "category": 2
+    "category": 3
 }
 ###
 POST http://localhost:3000/Ad
