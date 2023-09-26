@@ -1,7 +1,6 @@
 import AdCard, { AdCardProps } from "./AdCard";
 
-export const RecentAds = (): React.ReactNode => {
-    const ads: AdCardProps[]= [
+export const ads: AdCardProps[] = [
         {
             link:"/ads/table",
             imgUrl:"/images/table.webp",
@@ -38,7 +37,9 @@ export const RecentAds = (): React.ReactNode => {
             title:"Porte-magazine",
             price:45
         }
-    ];
+    ]
+
+export const RecentAds = (): React.ReactNode => {
     return (
         <main className="main-content">
             <h2>Annonces récentes</h2>
