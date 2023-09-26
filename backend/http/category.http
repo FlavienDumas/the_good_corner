@@ -1,15 +1,15 @@
-GET http://localhost:3000/Category?name=
+GET http://localhost:5000/Category?name=
 ###
-POST http://localhost:3000/Category
+POST http://localhost:5000/Category
 Content-Type: application/json
 
 {
-    "name": "NOUVELLE CATEGORIE"
+    "name": "Vacances"
 }
 ###
-DELETE http://localhost:3000/Category/4
+DELETE http://localhost:5000/Category/4
 ###
-PATCH http://localhost:3000/Category/3
+PATCH http://localhost:5000/Category/3
 Content-Type: application/json
 
 {

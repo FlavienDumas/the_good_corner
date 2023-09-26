@@ -17,13 +17,15 @@ export class AdController extends Controller{
                   }
                 },
                 relations: {
-                  category: true
+                  category: true,
+                  tags: true
                 }
               })
             } else {
               ads = await Ad.find({
                 relations: {
-                  category: true
+                  category: true,
+                  tags: true
                 }
               })
             }

@@ -1,19 +1,17 @@
-GET http://localhost:3000/Tag?name=
+GET http://localhost:5000/Tag?name=
 ###
-POST http://localhost:3000/Tag
+POST http://localhost:5000/Tag
 Content-Type: application/json
 
 {
-    "id": 1,
-    "name": "tag numero 999"
+    "name": "tag numero 4"
 }
 ###
-DELETE http://localhost:3000/Tag/4
+DELETE http://localhost:5000/Tag/4
 ###
-PATCH http://localhost:3000/Tag/3
+PATCH http://localhost:5000/Tag/5
 Content-Type: application/json
 
 {
-    "id": 55,
-    "name": "tag numero 3"
+    "name": "couleur bleue"
 }

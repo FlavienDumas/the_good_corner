@@ -1,22 +1,22 @@
-GET http://localhost:3000/Ad?category=Autre
+GET http://localhost:5000/Ad?category=
 ###
-POST http://localhost:3000/Ad
+POST http://localhost:5000/Ad
 Content-Type: application/json
 
 {
-    "title": "Je vend des farritas",
+    "title": "Ballon de foot du camp nou",
     "description":
-    "vend farritas, déjà entamées mais en sah elle sont encoure bonnes",
-    "owner": "le rat",
-    "price": 10,
-    "picture":
-    "https://brandsitesplatform-res.cloudinary.com/image/fetch/w_768,c_scale,q_auto:eco,f_auto,fl_lossy,dpr_1.0,e_sharpen:85/https://assets.brandplatform.generalmills.com%2F-%2Fmedia%2Fproject%2Fgmi%2Foldelpaso%2Foldelpaso-fr%2Foepp%2Fnri%2Fcrunchy-rainbow-chicken-fajitas%2Fcrunchy-rainbow-chicken-fajitas-hero.png%3Fw%3D480%26rev%3D6ef3fb0b7a0a4227b4bb46738149f6ee",
-    "location": "Paris",
-    "createdAt": "2023-10-05T10:14:15.922Z",
-    "category": 3
+    "Ballon de foot achetté dans la boutique du camp nou, neuf",
+    "owner": "Romain",
+    "price": 25,
+    "picture": "https://www.tradeinn.com/f/13853/138538961/barca-ballon-football-historical.jpg",
+    "location": "Bordeau",
+    "createdAt": "2023-09-26",
+    "category": 5,
+    "tags": []
 }
 ###
-POST http://localhost:3000/Ad
+POST http://localhost:5000/Ad
 Content-Type: application/json
 
 {
@@ -24,12 +24,11 @@ Content-Type: application/json
     "owner": "Dieu himself"
 }
 ###
-DELETE http://localhost:3000/Ad/3
+DELETE http://localhost:5000/Ad/11
 ###
-PATCH http://localhost:3000/Ad/4
+PATCH http://localhost:5000/Ad/6
 Content-Type: application/json
 
 {
-    "title": "TEST TEST",
-    "description": "TEST marche enfin cette merde ptn j'ai le bareau"
+    "category": 8
 }

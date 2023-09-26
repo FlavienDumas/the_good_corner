@@ -12,11 +12,13 @@ CREATE TABLE Ad
     FOREIGN KEY (category) REFERENCES Category(id)
 );
 
-DROP TABLE Ad;
+DROP TABLE category;
 
 SELECT * FROM Ad;
 
-DELETE FROM Ad;
+SELECT * FROM ad;
+
+DELETE FROM ad;
 
 INSERT INTO Ad (title, description, owner, price, location, createdAt, category) 
 VALUES 

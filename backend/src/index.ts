@@ -4,7 +4,7 @@ import express from "express";
 import { AdController } from "./controllers/Ad";
 import { CategoryController } from "./controllers/Category";
 import { TagController } from "./controllers/Tag";
-const port = 3000;
+const port = 5000;
 const app = express();
 
 app.use(express.json());
@@ -21,6 +21,8 @@ app.patch("/Ad/:id", adController.patchOne)
 
 const categoryController = new CategoryController();
 app.get("/Category", categoryController.getAll)
+app.post("/Category", categoryController.createOne)
+app.delete("/Category/:id", categoryController.deleteOne)
 app.patch("/Category/:id", categoryController.patchOne)
 
 const tagController = new TagController();
@@ -31,5 +33,5 @@ app.patch("/Tag/:id", tagController.patchOne)
 
 app.listen(port, async () => {
   await dataSource.initialize();
-  console.log('Server launch on http://localhost:3000');
+  console.log('Server launch on http://localhost:5000');
 });

@@ -24,7 +24,37 @@ export class CategoryController extends Controller {
             res.status(500).send();
         }
     }
-
+    createOne = async (req: Request, res: Response)=>{
+      try {
+          const newCategory = new Category();
+          Object.assign(newCategory, req.body);
+          console.log(newCategory);
+          const errors = await validate(newCategory);
+          if (errors.length === 0) {
+            await newCategory.save();
+            res.send(newCategory);
+          } else {
+            console.log(errors)
+          }
+        } catch (err) {
+          console.log(err);
+          res.status(500).send();
+        }
+    }
+    deleteOne = async (req: Request, res: Response)=>{
+        try{
+            const targetCategoryId: number = Number(req.params.id);
+            const targetCategory = await Category.findOneBy({id: targetCategoryId});
+            if (targetCategory){
+              await targetCategory.remove();
+              console.log(`Catégorie ${targetCategoryId} supprimée`)
+            }
+            res.send(targetCategory);
+          } catch (err) {
+            console.log(err);
+            res.status(500).send();
+          }
+    }
     patchOne = async (req: Request, res: Response)=>{
         try {
             const targetCategoryId: number = Number(req.params.id);

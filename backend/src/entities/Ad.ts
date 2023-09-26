@@ -22,7 +22,7 @@ export class Ad extends BaseEntity{
     createdAt!: Date;
     @ManyToOne(() => Category, (Category) => Category.ads)
     category!: Category;
-    @ManyToMany(()=> Tag, (Tag) => Tag.id)
+    @ManyToMany(()=> Tag, (tag) => tag.id)
     @JoinTable()
     tags!: Tag[];
 }
