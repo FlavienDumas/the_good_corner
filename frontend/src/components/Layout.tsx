@@ -11,7 +11,9 @@ const Layout = ({children}: {children: React.ReactNode}): React.ReactNode => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header />
-            <main className="main-content">{children}</main>
+            <body>
+                <main className="main-content">{children}</main>
+            </body>
         </>
     )
 }
