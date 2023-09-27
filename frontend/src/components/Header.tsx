@@ -1,60 +1,21 @@
+import { useEffect } from "react";
 import Category, { CategoryProps } from "./Category";
+import axios from "axios";
+import { useState } from "react";
+import React from "react";
 
 export const Header = (): React.ReactNode => {
-    const categories: CategoryProps[]= [
-        {
-            name: "Ameublement",
-            link: ""
-        },
-        {
-            name: "Électroménager",
-            link: ""
-        },
-        {
-            name: "Photographie",
-            link: ""
-        },
-        {
-            name: "Informatique",
-            link: ""
-        },
-        {
-            name: "Téléphonie",
-            link: ""
-        },
-        {
-            name: "Vélos",
-            link: ""
-        },
-        {
-            name: "Véhicules",
-            link: ""
-        },
-        {
-            name: "Sport",
-            link: ""
-        },
-        {
-            name: "Habillement",
-            link: ""
-        },
-        {
-            name: "Bébé",
-            link: ""
-        },
-        {
-            name: "Outillage",
-            link: ""
-        },
-        {
-            name: "Services",
-            link: ""
-        },
-        {
-            name: "Vacances",
-            link: ""
-        }
-    ]
+    const [categories, setCategories] = useState([] as CategoryProps[]);
+    useEffect(()=>{
+        axios
+            .get("http://localhost:5000/Category")
+            .then((result) => {
+                setCategories(result.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, []);
     return (
         <header className="header">
             <div className="main-menu">
@@ -82,21 +43,21 @@ export const Header = (): React.ReactNode => {
                     </svg>
                 </button>
                 </form>
-                <a href="/post-ad" className="button link-button">
+                <a href="/ads/new" className="button link-button">
                     <span className="mobile-short-label">Publier</span>
                     <span className="desktop-long-label">Publier une annonce</span>
                 </a>
             </div>
             <nav className="categories-navigation">
                 {categories.map((category, index)=> (
-                    <>
+                    <React.Fragment key= {category.id}>
                     <Category
-                        key= {category.name}
+                        id= {category.id}
                         name= {category.name}
                         link= {category.link}
                     />{" "}
                     {index < categories.length -1 ? "•" : ""}
-                    </>
+                    </React.Fragment>
                 ))}
             </nav>
         </header>

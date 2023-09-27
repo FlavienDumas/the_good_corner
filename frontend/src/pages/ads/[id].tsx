@@ -1,32 +1,35 @@
 import { useRouter } from "next/router";
-import { ads } from "@/components/RecentAds";
 import AdCard, { AdCardProps } from "@/components/AdCard";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const AdDetailComponent = () => {
+    const [ad, setAd] = useState({} as AdCardProps);
+
     const router = useRouter();
-    console.log(router);
-    const adId = router.query.id as string;
-    let foundAd: AdCardProps = {
-        title: "nothing found! click to return",
-        imgUrl: "",
-        price: 0,
-        link: "/"
-    };
-    for (const ad of ads) {
-        if (ad.link.endsWith(adId)) {
-            foundAd = ad;
-            break;
-        }
+    const adId = router.query.id;
+
+    async function fetchAd() {
+        const result = await axios.get(`http://localhost:5000/Ad?id=${adId}`);
+        setAd(result.data[0]);
     }
+
+    useEffect(()=>{
+        if (adId !== undefined) {
+            fetchAd();
+        }
+    }, [adId])
+
     return (
         <>
-            <p>détails de l'annonce {router.query.id} :</p>
+            <p>détails de l'annonce {adId} :</p>
             <AdCard
-                key={foundAd.title}
-                link={foundAd.link}
-                imgUrl={foundAd.imgUrl}
-                title={foundAd.title}
-                price={foundAd.price}
+                key={ad.id}
+                id={ad.id}
+                link={ad.link}
+                picture={ad.picture}
+                title={ad.title}
+                price={ad.price}
             />
         </>
     )

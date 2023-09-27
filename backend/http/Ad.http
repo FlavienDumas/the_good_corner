@@ -1,4 +1,4 @@
-GET http://localhost:5000/Ad?category=
+GET http://localhost:5000/Ad?id=2
 ###
 POST http://localhost:5000/Ad
 Content-Type: application/json
@@ -26,9 +26,9 @@ Content-Type: application/json
 ###
 DELETE http://localhost:5000/Ad/11
 ###
-PATCH http://localhost:5000/Ad/6
+PATCH http://localhost:5000/Ad/5
 Content-Type: application/json
 
 {
-    "category": 8
+    "picture": "https://images.frandroid.com/wp-content/uploads/2017/02/nokia-3310-1.jpg"
 }

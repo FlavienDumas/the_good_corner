@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { dataSource } from "./datasource";
+import cors from "cors";
 import express from "express";
 import { AdController } from "./controllers/Ad";
 import { CategoryController } from "./controllers/Category";
@@ -7,6 +8,7 @@ import { TagController } from "./controllers/Tag";
 const port = 5000;
 const app = express();
 
+app.use(cors())
 app.use(express.json());
 
 app.get("/", (req, res) => {

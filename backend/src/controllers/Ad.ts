@@ -9,12 +9,25 @@ export class AdController extends Controller{
         try {
             let ads;
             const categoryName = req.query.category;
+            const targetId = req.query.id;
             if (typeof(categoryName) === "string") {
+              console.log("test");
               ads = await Ad.find({
                 where:{
                   category:{
                     name: Like(`%${categoryName}%`)
                   }
+                },
+                relations: {
+                  category: true,
+                  tags: true
+                }
+              })
+            } else if (typeof(targetId) === "string"){
+              const targetIdnum = Number(targetId);
+              ads = await Ad.find({
+                where:{
+                  id: targetIdnum
                 },
                 relations: {
                   category: true,
@@ -38,13 +51,20 @@ export class AdController extends Controller{
     createOne = async (req: Request, res: Response)=>{
         try {
             const newAd = new Ad();
+            const date = new Date;
+            const dateString = date.toISOString().split('T')[0];
+            const today = new Date(dateString);
+
             Object.assign(newAd, req.body);
+            newAd["createdAt"] = today;
             const errors = await validate(newAd);
             if (errors.length === 0) {
               await newAd.save();
               res.send(newAd);
+              console.log("Ad " + newAd.title + " créé avec succès");
             } else {
-              console.log(errors)
+              console.log(errors);
+              res.send(errors);
             }
           } catch (err) {
             console.log(err);
