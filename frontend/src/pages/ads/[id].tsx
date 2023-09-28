@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
-import AdCard, { AdCardProps } from "@/components/AdCard";
+import AdDetail, {AdDetailProps} from "@/components/AdDetail";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { API_URL } from "@/config";
 
 const AdDetailComponent = () => {
-    const [ad, setAd] = useState({} as AdCardProps);
+    const [ad, setAd] = useState({} as AdDetailProps);
 
     const router = useRouter();
     const adId = router.query.id;
 
     async function fetchAd() {
-        const result = await axios.get(`http://localhost:5000/Ad?id=${adId}`);
+        const result = await axios.get(API_URL + `/Ad?id=${adId}`);
         setAd(result.data[0]);
     }
 
@@ -21,17 +22,17 @@ const AdDetailComponent = () => {
     }, [adId])
 
     return (
-        <>
-            <p>détails de l'annonce {adId} :</p>
-            <AdCard
-                key={ad.id}
-                id={ad.id}
-                link={ad.link}
-                picture={ad.picture}
-                title={ad.title}
-                price={ad.price}
-            />
-        </>
+        <AdDetail
+            id={ad.id}
+            title={ad.title}
+            description={ad.description}
+            owner={ad.owner}
+            price={ad.price}
+            picture={ad.picture}
+            location={ad.location}
+            createdAt={ad.createdAt}
+            link={ad.link}
+        />
     )
 }
 

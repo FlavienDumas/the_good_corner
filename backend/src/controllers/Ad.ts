@@ -8,14 +8,14 @@ export class AdController extends Controller{
     getAll = async (req: Request, res: Response)=>{
         try {
             let ads;
-            const categoryName = req.query.category;
-            const targetId = req.query.id;
-            if (typeof(categoryName) === "string") {
-              console.log("test");
+            const categoryId = req.query.category;
+            const adId = req.query.ad;
+            if (typeof(categoryId) === "string") {
+              const categoryIdNum = Number(categoryId);
               ads = await Ad.find({
                 where:{
                   category:{
-                    name: Like(`%${categoryName}%`)
+                    id: categoryIdNum
                   }
                 },
                 relations: {
@@ -23,11 +23,11 @@ export class AdController extends Controller{
                   tags: true
                 }
               })
-            } else if (typeof(targetId) === "string"){
-              const targetIdnum = Number(targetId);
+            } else if (typeof(adId) === "string"){
+              const adIdnum = Number(adId);
               ads = await Ad.find({
                 where:{
-                  id: targetIdnum
+                  id: adIdnum
                 },
                 relations: {
                   category: true,
