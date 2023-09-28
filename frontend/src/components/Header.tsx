@@ -3,12 +3,13 @@ import Category, { CategoryProps } from "./Category";
 import axios from "axios";
 import { useState } from "react";
 import React from "react";
+import { API_URL } from "@/config";
 
 export const Header = (): React.ReactNode => {
     const [categories, setCategories] = useState([] as CategoryProps[]);
     useEffect(()=>{
         axios
-            .get("http://localhost:5000/Category")
+            .get(API_URL + "/Category")
             .then((result) => {
                 setCategories(result.data);
             })
@@ -54,7 +55,7 @@ export const Header = (): React.ReactNode => {
                     <Category
                         id= {category.id}
                         name= {category.name}
-                        link= {category.link}
+                        link= {"/category/" + category.id}
                     />{" "}
                     {index < categories.length -1 ? "•" : ""}
                     </React.Fragment>

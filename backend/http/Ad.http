@@ -1,4 +1,4 @@
-GET http://localhost:5000/Ad?id=2
+GET http://localhost:5000/Ad?category=7
 ###
 POST http://localhost:5000/Ad
 Content-Type: application/json
