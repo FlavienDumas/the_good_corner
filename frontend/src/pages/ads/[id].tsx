@@ -31,6 +31,7 @@ const AdDetailComponent = () => {
             picture={ad.picture}
             location={ad.location}
             createdAt={ad.createdAt}
+            category={ad.category}
             link={ad.link}
         />
     )

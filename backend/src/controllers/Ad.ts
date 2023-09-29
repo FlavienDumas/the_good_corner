@@ -1,7 +1,6 @@
 import { Controller } from ".";
 import { Request, Response } from "express";
 import { Ad } from "../entities/Ad";
-import { Like } from "typeorm";
 import { validate } from "class-validator";
 
 export class AdController extends Controller{
@@ -9,7 +8,7 @@ export class AdController extends Controller{
         try {
             let ads;
             const categoryId = req.query.category;
-            const adId = req.query.ad;
+            const adId = req.query.id;
             if (typeof(categoryId) === "string") {
               const categoryIdNum = Number(categoryId);
               ads = await Ad.find({
@@ -60,11 +59,11 @@ export class AdController extends Controller{
             const errors = await validate(newAd);
             if (errors.length === 0) {
               await newAd.save();
-              res.send(newAd);
+              res.status(200).send({state: "Success"});
               console.log("Ad " + newAd.title + " créé avec succès");
             } else {
               console.log(errors);
-              res.send(errors);
+              res.status(400).send({state: "Failure"});
             }
           } catch (err) {
             console.log(err);
@@ -78,8 +77,11 @@ export class AdController extends Controller{
             if (targetAd){
               await targetAd.remove();
               console.log(`Ad ${targetAdId} supprimée`)
+              res.status(200).send({state: "Success"})
+            } else {
+              res.status(404).send({state: "Failure"})
+              console.log(`L'annonce Id : ${targetAdId} n'existe pas!`)
             }
-            res.send(targetAd);
           } catch (err) {
             console.log(err);
             res.status(500).send();
@@ -91,9 +93,15 @@ export class AdController extends Controller{
             const targetAd = await Ad.findOneBy({id: targetAdId});
             if (targetAd) {
               Object.assign(targetAd, req.body, {id : targetAd.id});
-              await targetAd.save();
-              res.send(targetAd);
-              console.log(`AD ${targetAdId} modifiée`)
+              const errors = await validate(targetAd);
+              if (errors.length === 0) {
+                await targetAd.save();
+                res.status(200).send({state: "Success"});
+                console.log(`Ad ${targetAdId} modifiée aavec succès`)
+              } else {
+                res.status(400).send({state: "Failure"});
+                console.log(errors);
+              }
             } else {
               console.log(`L'Ad ${targetAdId} n'existe pas`)
             }
