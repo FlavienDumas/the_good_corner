@@ -4,16 +4,13 @@ POST http://localhost:5000/Ad
 Content-Type: application/json
 
 {
-    "title": "Ballon de foot du camp nou",
-    "description":
-    "Ballon de foot achetté dans la boutique du camp nou, neuf",
-    "owner": "Romain",
-    "price": 25,
-    "picture": "https://www.tradeinn.com/f/13853/138538961/barca-ballon-football-historical.jpg",
-    "location": "Bordeau",
-    "createdAt": "2023-09-26",
-    "category": 5,
-    "tags": []
+    "title": "à supr",
+    "description": "à supr",
+    "owner": "moi wsh",
+    "price": "5",
+    "picture": "https://images.emojiterra.com/google/android-10/512px/274c.png",
+    "location": "Lyon",
+    "category": "7"
 }
 ###
 POST http://localhost:5000/Ad

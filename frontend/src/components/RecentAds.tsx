@@ -24,7 +24,6 @@ export const RecentAds = (props: RecentAdsProps): React.ReactNode => {
         let url = API_URL + '/Ad?';
 
         if (props.categoryId !== undefined && props.categoryId !== 'undefined') {
-            console.log("entrée dans la condition, modification de l'url");
             url += `category=${props.categoryId}`;
         }
         axios

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/config";
+import { useRouter } from "next/router";
+import AdForm from "./AdForm";
 
 export type AdDetailProps = {
     id: number,
@@ -11,23 +13,41 @@ export type AdDetailProps = {
     picture: string,
     location: string,
     createdAt: string,
+    category: {
+        id: number,
+        name: string
+    },
     link: string
 }
 
 const AdDetail = (props: AdDetailProps): React.ReactNode => {
     const [dateAd, setDateAd] = useState("");
-    const [confirmation, setConfirmation] = useState("");
+    const [message, setMessage] = useState("");
+    const [showPatchMenu, setShowPatchMenu] = useState<boolean>(false);
 
-    function deleteAdd(adId: number) {
+    const router = useRouter();
+
+    function deleteAd(adId: number) {
         axios
             .delete(API_URL + `/Ad/${adId}`)
             .then((result)=> {
-                console.log("Annonce supprimée!");
-                setConfirmation("Annonce supprimée avec succès");
+                if (result.data.state === "Success") {
+                    router.push("/");
+                } else {
+                    setMessage("Un problème est survenu...");
+                }
             })
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    function showPatch() {
+        if (showPatchMenu === true) {
+            setShowPatchMenu(false);
+        } else {
+            setShowPatchMenu(true);
+        }
     }
 
     useEffect(()=>{
@@ -64,10 +84,25 @@ const AdDetail = (props: AdDetailProps): React.ReactNode => {
                         </svg>
                         Envoyer un email
                     </a>
-                    <button className="button" onClick={()=>{deleteAdd(props.id)}}>Supprimer l'anonce {props.title}</button>
-                    <div>{confirmation}</div>
+                    <button className="button" onClick={()=>{deleteAd(props.id)}}>Supprimer l'anonce {props.title}</button>
+                    <button className="button" onClick={showPatch}>Modifier l'anonce {props.title}</button>
+                    <div>{message}</div>
                 </div>
             </section>
+            <div>
+                {showPatchMenu && 
+                    <AdForm 
+                    action="Patch"
+                    id={props.id}
+                    title={props.title}
+                    description={props.description}
+                    owner={props.owner}
+                    price={props.price}
+                    picture={props.picture}
+                    location={props.location}
+                    categoryId={props.category.id}
+                />}
+            </div>
         </main>
     )
 }
