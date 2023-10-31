@@ -1,39 +1,29 @@
 import "reflect-metadata";
 import { dataSource } from "./datasource";
-import cors from "cors";
-import express from "express";
-import { AdController } from "./controllers/Ad";
-import { CategoryController } from "./controllers/Category";
-import { TagController } from "./controllers/Tag";
-const port = 5000;
-const app = express();
+import { buildSchema } from "type-graphql";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { TagsResolver } from "./resolvers/Tags";
+import { AdsResolver } from "./resolvers/Ads";
+import { CategoriesResolver } from "./resolvers/Categories";
 
-app.use(cors())
-app.use(express.json());
+async function start(){
+  const schema = await buildSchema({
+    resolvers: [TagsResolver, AdsResolver, CategoriesResolver]
+  })
 
-app.get("/", (req, res) => {
-    res.send("Hello there");
-})
+  const server = new ApolloServer({
+    schema
+  })
 
-const adController = new AdController();
-app.get("/Ad", adController.getAll)
-app.post("/Ad", adController.createOne)
-app.delete("/Ad/:id", adController.deleteOne)
-app.patch("/Ad/:id", adController.patchOne)
-
-const categoryController = new CategoryController();
-app.get("/Category", categoryController.getAll)
-app.post("/Category", categoryController.createOne)
-app.delete("/Category/:id", categoryController.deleteOne)
-app.patch("/Category/:id", categoryController.patchOne)
-
-const tagController = new TagController();
-app.get("/Tag", tagController.getAll)
-app.post("/Tag", tagController.createOne)
-app.delete("/Tag/:id", tagController.deleteOne)
-app.patch("/Tag/:id", tagController.patchOne)
-
-app.listen(port, async () => {
   await dataSource.initialize();
-  console.log('Server launch on http://localhost:5000');
-});
+  await startStandaloneServer(server, {
+    listen: {
+      port: 5000
+    }
+  })
+
+  console.log('Server launch on http://localhost:5000')
+}
+
+start();

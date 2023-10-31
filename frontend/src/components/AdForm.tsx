@@ -16,7 +16,7 @@ type AdFormProps = {
     categoryId?: number
 }
 
-const AdForm = (props: AdFormProps) => {
+const AdForm = (props: AdFormProps): React.ReactNode => {
     const [categories, setCategories] = useState<CategoryProps[]>([]);
     const [message, setMessage] = useState("");
 

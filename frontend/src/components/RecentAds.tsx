@@ -4,10 +4,11 @@ import axios from "axios";
 import { API_URL } from "@/config";
 
 type RecentAdsProps = {
+    title?: string;
     categoryId?: string
 }
 
-export const RecentAds = (props: RecentAdsProps): React.ReactNode => {
+const RecentAds = (props: RecentAdsProps): React.ReactNode => {
     const [totalPrice, setTotalPrice] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
     const [ads, setAds] = useState([] as AdCardProps[])
@@ -22,9 +23,13 @@ export const RecentAds = (props: RecentAdsProps): React.ReactNode => {
     }
     function fetchAds() {
         let url = API_URL + '/Ad?';
+        console.log("props.title = " + props.title)
 
         if (props.categoryId !== undefined && props.categoryId !== 'undefined') {
-            url += `category=${props.categoryId}`;
+            url += `category=${props.categoryId}&`;
+        }
+        if (props.title !== undefined && props.title !== 'undefined') {
+            url += `title=${props.title}&`;
         }
         axios
             .get(url)
@@ -38,7 +43,7 @@ export const RecentAds = (props: RecentAdsProps): React.ReactNode => {
 
     useEffect(()=>{
         fetchAds();
-    }, [props.categoryId]);
+    }, [props.categoryId, props.title]);
 
     return (
         <main className="main-content">

@@ -2,6 +2,7 @@ import { Controller } from ".";
 import { Request, Response } from "express";
 import { Ad } from "../entities/Ad";
 import { validate } from "class-validator";
+import { Like } from "typeorm";
 
 export class AdController extends Controller{
     getAll = async (req: Request, res: Response)=>{
@@ -9,6 +10,7 @@ export class AdController extends Controller{
             let ads;
             const categoryId = req.query.category;
             const adId = req.query.id;
+            const adTitle = req.query.title;
             if (typeof(categoryId) === "string") {
               const categoryIdNum = Number(categoryId);
               ads = await Ad.find({
@@ -27,6 +29,16 @@ export class AdController extends Controller{
               ads = await Ad.find({
                 where:{
                   id: adIdnum
+                },
+                relations: {
+                  category: true,
+                  tags: true
+                }
+              })
+            } else if (typeof(adTitle) === "string"){
+              ads = await Ad.find({
+                where:{
+                  title: Like(`%${adTitle}%`)
                 },
                 relations: {
                   category: true,
