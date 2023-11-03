@@ -1,25 +1,45 @@
 import { useRouter } from "next/router";
 import AdDetail, {AdDetailProps} from "@/components/AdDetail";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/config";
+import { useQuery, gql } from '@apollo/client';
+
+export const queryOneAd = gql`
+  query GetOneAd($getOneAdId: ID!) {
+    getOneAd(id: $getOneAdId) {
+      id
+      description
+      title
+      owner
+      price
+      picture
+      location
+      createdAt
+      category {
+        id
+        name
+      }
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
 
 const AdDetailComponent = (): React.ReactNode => {
-    const [ad, setAd] = useState({} as AdDetailProps);
-
     const router = useRouter();
     const adId = router.query.id;
-
-    async function fetchAd() {
-        const result = await axios.get(API_URL + `/Ad?id=${adId}`);
-        setAd(result.data[0]);
-    }
+    const [ad, setAd] = useState({} as AdDetailProps);
+    const { loading, error, data } = useQuery(queryOneAd, {
+      variables: { getOneAdId: adId},
+      skip: adId === undefined
+    });
 
     useEffect(()=>{
-        if (adId !== undefined) {
-            fetchAd();
-        }
-    }, [adId])
+      if (data){
+        setAd(data.getOneAd);
+      }
+    }, [data])
 
     return (
         <AdDetail

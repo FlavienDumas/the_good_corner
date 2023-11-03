@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/config";
 import { useRouter } from "next/router";
 import AdForm from "./AdForm";
+import { useMutation } from '@apollo/client';
+import { mutationDeleteAd } from "@/query&mutations";
 
 export type AdDetailProps = {
     id: number,
@@ -24,22 +24,17 @@ const AdDetail = (props: AdDetailProps): React.ReactNode => {
     const [dateAd, setDateAd] = useState("");
     const [message, setMessage] = useState("");
     const [showPatchMenu, setShowPatchMenu] = useState<boolean>(false);
-
     const router = useRouter();
 
-    function deleteAd(adId: number) {
-        axios
-            .delete(API_URL + `/Ad/${adId}`)
-            .then((result)=> {
-                if (result.data.state === "Success") {
-                    router.push("/");
-                } else {
-                    setMessage("Un problème est survenu...");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    const [doDelete] = useMutation(mutationDeleteAd);
+    
+    async function deleteAd() {
+        await doDelete({
+          variables: {
+            deleteAdId: props.id,
+          },
+        });
+        router.push("/");
     }
 
     function showPatch() {
@@ -84,7 +79,7 @@ const AdDetail = (props: AdDetailProps): React.ReactNode => {
                         </svg>
                         Envoyer un email
                     </a>
-                    <button className="button" onClick={()=>{deleteAd(props.id)}}>Supprimer l'anonce {props.title}</button>
+                    <button className="button" onClick={deleteAd}>Supprimer l'anonce {props.title}</button>
                     <button className="button" onClick={showPatch}>Modifier l'anonce {props.title}</button>
                     <div>{message}</div>
                 </div>

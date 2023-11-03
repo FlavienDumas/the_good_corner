@@ -1,5 +1,5 @@
 import {BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import { Field, ID, InputType, ObjectType } from "type-graphql";
+import { Field, ID, InputType, Int, ObjectType } from "type-graphql";
 import { Category } from "./Category";
 import { Tag } from "./Tag"
 import { Length } from "class-validator";
@@ -55,7 +55,7 @@ export class Ad extends BaseEntity{
 }
 
 @InputType()
-export class AdInput{
+export class AdCreateInput{
     @Field()
     title!: string;
     @Field()
@@ -72,4 +72,39 @@ export class AdInput{
     category!: ObjectId;
     @Field(()=> [ObjectId], {nullable: true})
     tags!: ObjectId[];
+}
+
+@InputType()
+export class AdUpdateInput{
+    @Field({ nullable: true })
+    title!: string;
+    @Field({ nullable: true })
+    description!: string;
+    @Field({ nullable: true })
+    owner!: string;
+    @Field({ nullable: true })
+    price!: number;
+    @Field({ nullable: true })
+    picture!: string;
+    @Field({ nullable: true })
+    location!: string;
+    @Field({ nullable: true })
+    category!: ObjectId;
+    @Field(()=> [ObjectId], {nullable: true})
+    tags!: ObjectId[];
+}
+
+@InputType()
+export class AdsWhere {
+  @Field(() => [ID], { nullable: true })
+  categoryIn?: number[];
+
+  @Field(() => String, { nullable: true })
+  searchTitle?: string;
+
+  @Field(() => Int, { nullable: true })
+  priceGte?: number;
+
+  @Field(() => Int, { nullable: true })
+  priceLte?: number;
 }

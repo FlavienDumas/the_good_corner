@@ -1,8 +1,8 @@
 import { FormEvent, useState, useEffect } from "react";
-import axios from "axios";
-import { API_URL } from "@/config";
 import { CategoryProps } from "./Category";
 import { useRouter } from "next/router";
+import { useMutation, useQuery } from "@apollo/client";
+import { queryAllCategories, mutationUpdateAd, mutationCreateAd } from "@/query&mutations";
 
 type AdFormProps = {
     action: string
@@ -17,6 +17,7 @@ type AdFormProps = {
 }
 
 const AdForm = (props: AdFormProps): React.ReactNode => {
+    const router = useRouter();
     const [categories, setCategories] = useState<CategoryProps[]>([]);
     const [message, setMessage] = useState("");
 
@@ -28,55 +29,65 @@ const AdForm = (props: AdFormProps): React.ReactNode => {
     const [location, setLocation] = useState(props.location);
     const [category, setCategory] = useState(props.categoryId);
 
-    const router = useRouter();
+    const { loading, error, data } = useQuery(queryAllCategories);
+    const [doCreate] = useMutation(mutationCreateAd);
+    const [doUpdate] = useMutation(mutationUpdateAd);
+
+    async function createAd() {
+        await doCreate({
+          variables: {
+            data: {
+                title: title,
+                description: description,
+                owner: owner,
+                price: price,
+                picture: picture,
+                location: location,
+                category: {
+                  id: category
+                }
+            }
+          },
+        });
+        router.push(`/`);
+    }
+
+    async function updateAd() {
+        await doUpdate({
+          variables: {
+            data: {
+                title: title,
+                description: description,
+                owner: owner,
+                price: price,
+                picture: picture,
+                location: location,
+                category: {
+                  id: category
+                }
+            },
+            updateAdId: props.id
+          }
+        });
+    }
 
     useEffect(()=>{
-        fetchCategories();
-    }, [])
-
-    const fetchCategories = async () => {
-        const result = await axios.get<CategoryProps[]>(API_URL + "/Category")
-        setCategories(result.data);
-    };
+        if (!loading){
+            setCategories(data.allCategories);
+        }
+    }, [loading]);
 
     const submit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form as HTMLFormElement)
-        const formJSON = Object.fromEntries(formData.entries());
-        
         if (props.action === "Post") {
             console.log("action = Post");
-            axios
-                .post(API_URL + "/Ad", formJSON)
-                .then(response => {
-                    if (response.data.state === 'Success') {
-                        router.replace("/");
-                    } else {
-                        setMessage("Annonce inchangée, problème rencontré")
-                    }
-            })
-            .catch(error => {
-                setMessage("Un problème est survenu...")
-                console.error("Erreur lors de la requête : ", error);
-            });;
+            createAd();
         } else if (props.action === "Patch") {
             console.log("action = Patch");
-            axios
-                .patch(API_URL + "/Ad/" + props.id, formJSON)
-                .then(response => {
-                    if (response.data.state === 'Success') {
-                        router.replace("/");
-                    } else if (response.data.state === 'Failure') {
-                        setMessage("Annonce inchangée, problème rencontré")
-                    }
-            })
-            .catch(error => {
-                setMessage("Un problème est survenu...");
-                console.error("Erreur lors de la requête : ", error);
-            });;
+            updateAd();
         }
     }
+    
     return (
         <form onSubmit={submit}>
             <label>

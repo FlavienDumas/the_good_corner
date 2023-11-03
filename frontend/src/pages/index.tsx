@@ -7,14 +7,14 @@ export default function Home(): React.ReactNode {
   const [searchTitle, setSearchTitle] = useState<string>();
 
   useEffect(()=>{
-    console.log("entrée dans le useEffect searchTitle");
+    console.log('use effect, router.query.searchTitle changé')
     if (typeof(router.query.searchTitle) === "string") {
-      console.log("le router de index a détecté searchTitle");
-      setSearchTitle(router.query.searchTitle);
+      setSearchTitle(undefined);
     }
-  },[searchTitle])
+    
+  },[router.query.searchTitle])
 
   return (
-    <RecentAds title={searchTitle}/>
+    <RecentAds searchTitle={searchTitle}/>
   );
 }

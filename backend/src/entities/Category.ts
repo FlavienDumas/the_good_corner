@@ -1,5 +1,5 @@
 import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType, InputType } from "type-graphql";
 import { Ad } from "./Ad";
 
 @Entity()
@@ -14,4 +14,16 @@ export class Category extends BaseEntity{
     @OneToMany(() => Ad, (ad) => ad.category)
     @Field(()=> [Ad])
     ads!:Ad[];
+}
+
+@InputType()
+export class CategoryCreateInput{
+    @Field()
+    name!: string;
+}
+
+@InputType()
+export class CategoryUpdateInput{
+    @Field({ nullable: true })
+    name!: string;
 }

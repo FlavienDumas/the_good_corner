@@ -1,14 +1,15 @@
 import { FormEvent, useEffect } from "react";
 import Category, { CategoryProps } from "./Category";
-import axios from "axios";
 import { useState } from "react";
 import React from "react";
-import { API_URL } from "@/config";
 import { useRouter } from "next/router";
+import { useQuery } from '@apollo/client';
+import { queryAllCategories } from "@/query&mutations";
 
 export const Header = (): React.ReactNode => {
     const [categories, setCategories] = useState([] as CategoryProps[]);
     const [searchTitle, setSearchTitle] = useState<string>("");
+    const { loading, error, data } = useQuery(queryAllCategories);
     const router = useRouter();
 
     function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -17,15 +18,10 @@ export const Header = (): React.ReactNode => {
     }
 
     useEffect(()=>{
-        axios
-            .get(API_URL + "/Category")
-            .then((result) => {
-                setCategories(result.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, []);
+        if (!loading){
+            setCategories(data.allCategories);
+        }
+    }, [loading]);
 
     return (
         <header className="header">

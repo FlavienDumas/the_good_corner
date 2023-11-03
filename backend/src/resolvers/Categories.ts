@@ -1,5 +1,5 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { Category } from "../entities/Category";
+import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Category, CategoryCreateInput, CategoryUpdateInput } from "../entities/Category";
 import { validate } from "class-validator";
 
 @Resolver(Category)
@@ -12,7 +12,7 @@ export class CategoriesResolver {
     }
 
     @Query(()=> Category, {nullable: true})
-    async getOneCategory(@Arg("id") id: number): Promise<Category | null> {
+    async getOneCategory(@Arg("id", () => ID) id: number): Promise<Category | null> {
       return await Category.findOne({where:{
         id: id
       },
@@ -22,9 +22,9 @@ export class CategoriesResolver {
     }
 
     @Mutation(() => Category)
-    async createCategory(@Arg("name") name: string): Promise<Category> {
+    async createCategory(@Arg("data", () => CategoryCreateInput) data: CategoryCreateInput): Promise<Category> {
         const newCategory = new Category();
-        newCategory.name = name;
+        Object.assign(newCategory, data);
 
         const errors = await validate(newCategory);
             if (errors.length === 0) {
@@ -33,5 +33,37 @@ export class CategoriesResolver {
             } else {
               throw new Error(`Error occured : ${JSON.stringify(errors)}`)
             }
+    }
+
+    @Mutation(() => Category, { nullable: true })
+    async updateCategory( @Arg("id", () => ID) id: number,
+      @Arg("data") data: CategoryUpdateInput): Promise<Category | null>{
+      const targetCategory = await Category.findOne({where:{id: id},
+        relations : {ads: true}});
+
+        if (targetCategory){
+          Object.assign(targetCategory, data);
+          const errors = await validate(targetCategory);
+            if (errors.length === 0) {
+              await targetCategory.save();
+
+              return (await Category.findOne({where:{id: id},
+                relations : {ads: true}}));
+            } else {
+              throw new Error(`Error occured : ${JSON.stringify(errors)}`)
+            }
+        }
+        return targetCategory;
+    }
+
+    @Mutation(() => Category, {nullable: true})
+    async deleteCategory(@Arg("id", () => ID) id: number): Promise<Category | null> {
+      const targetCategory = await Category.findOneBy({id: id});
+
+      if (targetCategory){
+        await targetCategory.remove();
+        targetCategory.id = id;
+      }
+      return targetCategory;
     }
 }

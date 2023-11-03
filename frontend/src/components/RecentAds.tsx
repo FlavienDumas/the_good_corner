@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import AdCard, { AdCardProps } from "./AdCard";
-import axios from "axios";
-import { API_URL } from "@/config";
+import { useQuery } from '@apollo/client';
+import { queryAllAds } from "@/query&mutations";
 
 type RecentAdsProps = {
-    title?: string;
+    searchTitle?: string;
     categoryId?: string
 }
 
@@ -12,6 +12,14 @@ const RecentAds = (props: RecentAdsProps): React.ReactNode => {
     const [totalPrice, setTotalPrice] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
     const [ads, setAds] = useState([] as AdCardProps[])
+    const { loading, error, data } = useQuery(queryAllAds, {
+        variables: {
+            where: {
+              ...(props.categoryId ? { categoryIn: [props.categoryId] } : {}),
+              ...(props.searchTitle ? { searchTitle: props.searchTitle } : {}),
+            }
+          }
+    });
 
     function addTotal(price: number){
         setTotalPrice(price+totalPrice)
@@ -21,29 +29,12 @@ const RecentAds = (props: RecentAdsProps): React.ReactNode => {
         setTotalPrice(0)
         setTotalItems(0)
     }
-    function fetchAds() {
-        let url = API_URL + '/Ad?';
-        console.log("props.title = " + props.title)
-
-        if (props.categoryId !== undefined && props.categoryId !== 'undefined') {
-            url += `category=${props.categoryId}&`;
-        }
-        if (props.title !== undefined && props.title !== 'undefined') {
-            url += `title=${props.title}&`;
-        }
-        axios
-            .get(url)
-            .then((result) => {
-                setAds(result.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
 
     useEffect(()=>{
-        fetchAds();
-    }, [props.categoryId, props.title]);
+        if (!loading){
+            setAds(data.allAds);
+        }
+    }, [loading]);
 
     return (
         <main className="main-content">
