@@ -51,6 +51,14 @@ export const Header = (): React.ReactNode => {
                         </svg>
                     </button>
                 </form>
+                <a href="/category/new" className="button link-button">
+                    <span className="mobile-short-label">Categ.</span>
+                    <span className="desktop-long-label">Créer une Categorie</span>
+                </a>
+                <a href="/tags/new" className="button link-button">
+                    <span className="mobile-short-label">Tag</span>
+                    <span className="desktop-long-label">Créer un Tag</span>
+                </a>
                 <a href="/ads/new" className="button link-button">
                     <span className="mobile-short-label">Publier</span>
                     <span className="desktop-long-label">Publier une annonce</span>

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import AdForm from "./AdForm";
 import { useMutation } from '@apollo/client';
 import { mutationDeleteAd } from "@/query&mutations";
+import { Flipper, Flipped } from "react-flip-toolkit";
 
 export type AdDetailProps = {
     id: number,
@@ -84,20 +85,27 @@ const AdDetail = (props: AdDetailProps): React.ReactNode => {
                     <div>{message}</div>
                 </div>
             </section>
-            <div>
-                {showPatchMenu && 
-                    <AdForm 
-                    action="Patch"
-                    id={props.id}
-                    title={props.title}
-                    description={props.description}
-                    owner={props.owner}
-                    price={props.price}
-                    picture={props.picture}
-                    location={props.location}
-                    categoryId={props.category.id}
-                />}
-            </div>
+            <Flipper flipKey={showPatchMenu}>
+                <Flipped flipId={1} stagger>
+                    <div>
+                        {showPatchMenu && 
+                            <>
+                                <h2 className="ad-details-title">Modifier {props.title}</h2>
+                                <AdForm 
+                                action="Patch"
+                                id={props.id}
+                                title={props.title}
+                                description={props.description}
+                                owner={props.owner}
+                                price={props.price}
+                                picture={props.picture}
+                                location={props.location}
+                                categoryId={props.category.id}/>
+                            </>
+                            }
+                    </div>
+                </Flipped>
+            </Flipper>
         </main>
     )
 }

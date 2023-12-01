@@ -7,11 +7,9 @@ export default function Home(): React.ReactNode {
   const [searchTitle, setSearchTitle] = useState<string>();
 
   useEffect(()=>{
-    console.log('use effect, router.query.searchTitle changé')
     if (typeof(router.query.searchTitle) === "string") {
-      setSearchTitle(undefined);
+      setSearchTitle(router.query.searchTitle);
     }
-    
   },[router.query.searchTitle])
 
   return (

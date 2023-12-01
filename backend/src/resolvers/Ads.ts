@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, ID, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Ad, AdCreateInput, AdUpdateInput, AdsWhere } from "../entities/Ad";
 import { validate } from "class-validator";
 import { In, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
@@ -6,7 +6,9 @@ import { In, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
 @Resolver(Ad)
 export class AdsResolver {
     @Query(()=>[Ad])
-    async allAds(@Arg("where", { nullable: true }) where?: AdsWhere): Promise<Ad[]> {
+    async allAds(@Arg("where", { nullable: true }) where?: AdsWhere, 
+    @Arg("take", { nullable: true }) take?: number,
+    @Arg("skip", { nullable: true }) skip?: number): Promise<Ad[]> {
       const queryWhere: any = {};
 
       if (where?.categoryIn) {
@@ -26,11 +28,39 @@ export class AdsResolver {
       }
 
       return await Ad.find({
+        take: take ?? 5,
+        skip: skip ?? 0,
         where: queryWhere,
         relations : {
           tags: true,
           category: true
       }});
+    }
+
+    @Query(()=>Int)
+    async allAdsCount(@Arg("where", { nullable: true }) where?: AdsWhere): Promise<number> {
+      const queryWhere: any = {};
+
+      if (where?.categoryIn) {
+        queryWhere.category = { id: In(where.categoryIn) };
+      }
+
+      if (where?.searchTitle) {
+        queryWhere.title = Like(`%${where.searchTitle}%`);
+      }
+  
+      if (where?.priceGte) {
+        queryWhere.price = MoreThanOrEqual(Number(where.priceGte));
+      }
+  
+      if (where?.priceLte) {
+        queryWhere.price = LessThanOrEqual(Number(where.priceLte));
+      }
+
+      const count = await Ad.count({
+        where: queryWhere});
+      
+      return count;
     }
 
     @Query(()=> Ad, {nullable: true})
