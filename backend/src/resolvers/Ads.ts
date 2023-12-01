@@ -34,7 +34,11 @@ export class AdsResolver {
         relations : {
           tags: true,
           category: true
-      }});
+        },
+        order: {
+          id: "ASC"
+      }
+        });
     }
 
     @Query(()=>Int)
