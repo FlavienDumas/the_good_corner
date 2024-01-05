@@ -1,20 +1,8 @@
 import { FormEvent, useState, useEffect } from "react";
-import { CategoryProps } from "./Category";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
 import { queryAllCategories, mutationUpdateAd, mutationCreateAd } from "@/query&mutations";
-
-type AdFormProps = {
-    action: string
-    id?: number,
-    title?: string,
-    description?: string,
-    owner?: string,
-    price?: number,
-    picture?: string,
-    location?: string,
-    categoryId?: number
-}
+import { AdFormProps, CategoryProps } from "@/types";
 
 const AdForm = (props: AdFormProps): React.ReactNode => {
     const router = useRouter();

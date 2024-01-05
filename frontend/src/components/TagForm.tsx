@@ -2,12 +2,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { mutationUpdateTag, mutationCreateTag } from "@/query&mutations";
-
-type TagFormProps = {
-    action: string
-    id?: number,
-    name?: string
-}
+import { TagFormProps } from "@/types";
 
 const TagForm = (props: TagFormProps): React.ReactNode => {
     const router = useRouter();

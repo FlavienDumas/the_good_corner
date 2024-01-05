@@ -1,8 +1,4 @@
-export type CategoryProps = {
-    id: number,
-    name: string,
-    link: string
-}
+import { CategoryProps } from "@/types";
 
 const Category = (props: CategoryProps): React.ReactNode => {
     return (

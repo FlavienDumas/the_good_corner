@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import AdCard, { AdCardProps } from "./AdCard";
+import AdCard from "./AdCard";
 import { useQuery } from '@apollo/client';
 import { queryAllAds } from "@/query&mutations";
 import { Flipper, Flipped } from "react-flip-toolkit";
+import { AdCardProps } from "@/types";
 
 type RecentAdsProps = {
     searchTitle?: string;
@@ -23,11 +24,12 @@ const RecentAds = (props: RecentAdsProps): React.ReactNode => {
             },
             take: pageSize,
             skip: (page*pageSize)-pageSize
-          }
+          },
+        fetchPolicy: "no-cache"
     });
 
     useEffect(()=>{
-        if (!loading){
+        if (!loading && !error){
             setAds(data.allAds);
             setPagesCount(Math.ceil(data.allAdsCount/pageSize));
         }

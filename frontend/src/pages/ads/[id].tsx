@@ -1,30 +1,9 @@
 import { useRouter } from "next/router";
-import AdDetail, {AdDetailProps} from "@/components/AdDetail";
+import AdDetail from "@/components/AdDetail";
 import { useEffect, useState } from "react";
 import { useQuery, gql } from '@apollo/client';
-
-export const queryOneAd = gql`
-  query GetOneAd($getOneAdId: ID!) {
-    getOneAd(id: $getOneAdId) {
-      id
-      description
-      title
-      owner
-      price
-      picture
-      location
-      createdAt
-      category {
-        id
-        name
-      }
-      tags {
-        id
-        name
-      }
-    }
-  }
-`;
+import { AdDetailProps } from "@/types";
+import { queryOneAd } from "@/query&mutations";
 
 const AdDetailComponent = (): React.ReactNode => {
     const router = useRouter();
@@ -53,6 +32,7 @@ const AdDetailComponent = (): React.ReactNode => {
             createdAt={ad.createdAt}
             category={ad.category}
             link={ad.link}
+            createdBy={ad.createdBy}
         />
     )
 }

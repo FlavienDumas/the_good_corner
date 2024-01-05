@@ -1,20 +1,41 @@
 import { FormEvent, useEffect } from "react";
-import Category, { CategoryProps } from "./Category";
+import Category from "./Category";
 import { useState } from "react";
 import React from "react";
 import { useRouter } from "next/router";
-import { useQuery } from '@apollo/client';
-import { queryAllCategories } from "@/query&mutations";
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { mutationSignOut, queryAllCategories, queryMe } from "@/query&mutations";
+import { CategoryProps, UserType } from "@/types";
+import Link from "next/link";
 
 export const Header = (): React.ReactNode => {
+    const apolloClient = useApolloClient();
     const [categories, setCategories] = useState([] as CategoryProps[]);
     const [searchTitle, setSearchTitle] = useState<string>("");
     const { loading, error, data } = useQuery(queryAllCategories);
     const router = useRouter();
+    const [doSignOut] = useMutation(mutationSignOut, {refetchQueries: [queryMe]});
+
+    const {data: meData, error: meError} = useQuery<{me: UserType}>(queryMe);
+    const [me, setMe] = useState(meData?.me)
+
+    useEffect(()=>{
+        if(meData){
+            setMe(meData?.me);
+        }
+        if(meError){
+            setMe(undefined);
+        }
+    }, [meData, meError])
 
     function onSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         router.push(`/?searchTitle=${searchTitle.trim()}`);
+    }
+
+    const logout = async ()=>{
+        apolloClient.clearStore();
+        doSignOut();
     }
 
     useEffect(()=>{
@@ -27,10 +48,10 @@ export const Header = (): React.ReactNode => {
         <header className="header">
             <div className="main-menu">
                 <h1>
-                    <a href="/" className="button logo link-button"
+                    <Link href="/" className="button logo link-button"
                         ><span className="mobile-short-label">TGC</span>
                         <span className="desktop-long-label">THE GOOD CORNER</span>
-                    </a>
+                    </Link>
                 </h1>
                 <form className="text-field-with-button" onSubmit={onSubmit}>
                     <input className="text-field main-search-field" type="search" 
@@ -51,18 +72,35 @@ export const Header = (): React.ReactNode => {
                         </svg>
                     </button>
                 </form>
-                <a href="/category/new" className="button link-button">
+                <Link href="/category/new" className="button link-button">
                     <span className="mobile-short-label">Categ.</span>
                     <span className="desktop-long-label">Créer une Categorie</span>
-                </a>
-                <a href="/tags/new" className="button link-button">
+                </Link>
+                <Link href="/tags/new" className="button link-button">
                     <span className="mobile-short-label">Tag</span>
                     <span className="desktop-long-label">Créer un Tag</span>
-                </a>
-                <a href="/ads/new" className="button link-button">
+                </Link>
+                <Link href="/ads/new" className="button link-button">
                     <span className="mobile-short-label">Publier</span>
                     <span className="desktop-long-label">Publier une annonce</span>
-                </a>
+                </Link>
+                {!me &&
+                    <Link href="/signIn" className="button link-button">
+                    <span className="mobile-short-label">Connexion</span>
+                    <span className="desktop-long-label">Se connecter</span>
+                    </Link>
+                }
+                
+                {me && <>
+                    <button className="button button-primary" onClick={logout}>
+                        logOut
+                    </button>
+                    <Link href="/users/me" className="button button-primary">
+                        <span className="mobile-short-label">Me</span>
+                        <span className="desktop-long-label">{me.email}</span>
+                    </Link>
+                </>}
+                
             </div>
             <nav className="categories-navigation">
                 {categories.map((category, index)=> (

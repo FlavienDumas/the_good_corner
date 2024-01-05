@@ -2,12 +2,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { mutationUpdateCategory, mutationCreateCategory } from "@/query&mutations";
-
-type CategoryFormProps = {
-    action: string
-    id?: number,
-    name?: string
-}
+import { CategoryFormProps } from "@/types";
 
 const CategoryForm = (props: CategoryFormProps): React.ReactNode => {
     const router = useRouter();

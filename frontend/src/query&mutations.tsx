@@ -19,8 +19,48 @@ export const queryAllAds = gql`
             id
             name
         }
+        createdBy {
+            id
+            email
+        }
         }
         allAdsCount(where: $where)
+    }
+`;
+
+export const queryOneAd = gql`
+    query GetOneAd($getOneAdId: ID!) {
+        getOneAd(id: $getOneAdId) {
+            id
+            description
+            title
+            owner
+            price
+            picture
+            location
+            createdAt
+            category {
+            id
+            name
+            }
+            tags {
+            id
+            name
+            }
+            createdBy {
+            id
+            email
+            }
+        }
+    }
+`;
+
+export const queryMe = gql`
+    query Me {
+        me {
+        id
+        email
+        }
     }
 `;
 
@@ -113,5 +153,29 @@ export const mutationUpdateTag = gql`
         id
         name
         }
+    }
+`;
+
+export const mutationSignUp = gql`
+    mutation SignUp($data: UserCreateInput!) {
+        signUp(data: $data) {
+        email
+        id
+        }
+    }
+`;
+
+export const mutationSignIn = gql`
+    mutation SignIn($data: UserCreateInput!) {
+        signIn(data: $data) {
+        id
+        email
+        }
+    }
+`;
+
+export const mutationSignOut = gql`
+    mutation Mutation {
+        signOut
     }
 `;
