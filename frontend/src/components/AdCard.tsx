@@ -1,10 +1,4 @@
-export type AdCardProps = {
-    id: number,
-    title: string,
-    price: number,
-    picture: string,
-    link: string
-}
+import { AdCardProps } from "@/types";
 
 const AdCard = ({ title, picture, price, link }: AdCardProps): React.ReactNode => {
     return (

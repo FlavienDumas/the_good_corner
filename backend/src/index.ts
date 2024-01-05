@@ -1,39 +1,53 @@
 import "reflect-metadata";
 import { dataSource } from "./datasource";
-import cors from "cors";
-import express from "express";
-import { AdController } from "./controllers/Ad";
-import { CategoryController } from "./controllers/Category";
-import { TagController } from "./controllers/Tag";
-const port = 5000;
-const app = express();
+import { buildSchema } from "type-graphql";
+import { ApolloServer } from "@apollo/server";
+import { TagsResolver } from "./resolvers/Tags";
+import { AdsResolver } from "./resolvers/Ads";
+import { CategoriesResolver } from "./resolvers/Categories";
+import { UsersResolver } from "./resolvers/Users";
+import { ContextType, customAuthChecker } from "./auth";
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
 
-app.use(cors())
-app.use(express.json());
-
-app.get("/", (req, res) => {
-    res.send("Hello there");
-})
-
-const adController = new AdController();
-app.get("/Ad", adController.getAll)
-app.post("/Ad", adController.createOne)
-app.delete("/Ad/:id", adController.deleteOne)
-app.patch("/Ad/:id", adController.patchOne)
-
-const categoryController = new CategoryController();
-app.get("/Category", categoryController.getAll)
-app.post("/Category", categoryController.createOne)
-app.delete("/Category/:id", categoryController.deleteOne)
-app.patch("/Category/:id", categoryController.patchOne)
-
-const tagController = new TagController();
-app.get("/Tag", tagController.getAll)
-app.post("/Tag", tagController.createOne)
-app.delete("/Tag/:id", tagController.deleteOne)
-app.patch("/Tag/:id", tagController.patchOne)
-
-app.listen(port, async () => {
+async function start(){
   await dataSource.initialize();
-  console.log('Server launch on http://localhost:5000');
-});
+  const schema = await buildSchema({
+    resolvers: [TagsResolver, AdsResolver, CategoriesResolver, UsersResolver],
+    authChecker: customAuthChecker
+  })
+
+  const app = express();
+  const httpServer = http.createServer(app);
+
+  const server = new ApolloServer<ContextType>({
+    schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+  await server.start();
+
+  app.use(
+    '/',
+    cors<cors.CorsRequest>({
+      origin: "http://localhost:3000",
+      credentials: true
+    }),
+    express.json({ limit: '50mb' }),
+    expressMiddleware(server, {
+      context: async(args)=>{
+        return {
+          req: args.req,
+          res: args.res
+        }
+      },
+    }),
+  );
+
+  await new Promise<void>((resolve) => httpServer.listen({ port: 5000 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:5000/`);
+}
+
+start();
